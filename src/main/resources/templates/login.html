@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(用户登录)">
+    <title></title>
+</head>
+<body>
+<!--导航栏部分-->
+<nav th:replace="fragment/nav3::nav3(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container" style="padding-top: 80px;padding-bottom: 80px" >
+
+    <h1 class="title center">登录</h1>
+    <br/>
+    <form id="myForm">
+        <!-- 表单输入 -->
+        <div  class="form-horizontal">
+            <div class="form-group">
+                <label for="inputEmail" class="control-label">账号：</label>
+                <input name="account" type="text" class="form-control" id="inputEmail" placeholder="请输入账号"/>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="control-label">密码：</label>
+                <input name="password" type="password" class="form-control" id="inputPassword" placeholder="请输入密码" />
+            </div>
+            <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="startLogin()">登录</button>
+            </div>
+        </div>
+        <br/>
+    </form>
+</div>
+
+<!--尾部-->
+<div th:replace="fragment/footer::footer"></div>
+
+<script type="text/javascript">
+    function startLogin() {
+        var data=$('#myForm').serialize();
+        $.ajax({
+            type : 'POST',
+            url : '/startLogin',
+            data :data,
+            success : function(result) {
+                if (200===result.code){
+                    toast(result.extend.data,'danger');
+                }else {
+                    top.location="/";
+                }
+            }
+        })
+    }
+    function toast(message,type) {
+        bootoast({
+            message: message,
+            type: type,
+            position: 'top-center',
+            icon: type,
+            timeout: 2,
+            animationDuration: 300,
+            dismissible: true
+        });
+    }
+</script>
+
+</body>
+</html>

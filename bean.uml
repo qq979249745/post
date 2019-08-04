@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.nchu16201533.post.bean</OriginalElement>
+  <nodes>
+    <node x="365.0" y="289.0">com.nchu16201533.post.bean.SaleItem</node>
+    <node x="183.0" y="289.0">com.nchu16201533.post.bean.Customer</node>
+    <node x="283.0" y="486.0">com.nchu16201533.post.bean.Category</node>
+    <node x="0.0" y="486.0">com.nchu16201533.post.bean.RestResponse</node>
+    <node x="502.0" y="0.0">com.nchu16201533.post.bean.Product</node>
+    <node x="548.0" y="289.0">com.nchu16201533.post.bean.Manager</node>
+    <node x="0.0" y="0.0">com.nchu16201533.post.bean.Sale</node>
+    <node x="494.0" y="486.0">com.nchu16201533.post.bean.Cart</node>
+    <node x="233.0" y="0.0">com.nchu16201533.post.bean.ProductSpecification</node>
+    <node x="0.0" y="289.0">com.nchu16201533.post.bean.CartItem</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="295.0" y="264.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

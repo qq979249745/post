@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head th:replace="fragment/head :: head(登录)">
+    <title></title>
+</head>
+
+<body>
+<div class="container" >
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center animated bounceInDown">管理员后台登录</h2>
+        </div>
+        <div  class="col-md-12" style="margin-top: 100px">
+                <form id="login_form">
+                    <div class="form-group">
+                        <label for="account">账号：</label>
+                        <input name="account" type="text" class="form-control" id="account" placeholder="account">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码：</label>
+                        <input name="password" type="password" class="form-control" id="password" placeholder="password">
+                    </div>
+                    <div v-show="message!=''" class="alert alert-danger" v-text="message"></div>
+                    <button @click="submit" type="button" class="btn btn-primary">登录</button>
+                </form>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+    $(function () {
+        var vue=new Vue({
+           el:"#login_form",
+           data:{
+               message:''
+           },
+            methods:{
+                submit:function (){
+                    $.ajax({
+                        url:'/manager/submit',
+                        data:$("#login_form").serialize(),
+                        type:'post',
+                        success:function (result) {
+                            console.log(result);
+                            if (200===result.code){
+                                vue.message=result.extend.data;
+                            }else {
+                                top.location=result.extend.data;
+                            }
+                        }
+                    })
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

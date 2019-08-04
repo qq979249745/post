@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(商品详情)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/nav3::nav3(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container-fluid" style="margin-top: 80px" id="main">
+    <div class="row">
+        <div class="col-sm-1 col-md-1"></div>
+        <div class="col-sm-10 col-md-10">
+            <h1 th:text="${product.productName}"></h1>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1 col-md-1"></div>
+        <div class="col-sm-5 col-md-5">
+            <img style="height: 500px;" th:src="'/productImg/'+${product.ps.productImg}">
+        </div>
+        <div class="col-sm-5 col-md-5 detail-x">
+            <table class="table table-striped">
+                <tr>
+                    <th>商品市场价</th>
+                    <td><del th:text="'¥'+${product.ps.price*0.01}+'元'"></del></td>
+                </tr>
+                <tr>
+                    <th>商品促销价</th>
+                    <td th:text="'¥'+${product.ps.discount*0.01}+'元'"></td>
+                </tr>
+                <tr>
+                    <th>商品描述</th>
+                    <td th:text="${product.ps.specification}"></td>
+                </tr>
+                <tr>
+                    <th>商品类别</th>
+                    <td th:text="${product.category.categoryName}"></td>
+                </tr>
+                <tr>
+                    <th>商品库存</th>
+                    <td th:text="${product.ps.inventory}"></td>
+                </tr>
+                <tr>
+                    <th>购买数量</th>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form id="myForm">
+                                <input name="productId" hidden="hidden" th:value="${product.id}">
+                                <button type="button" class="btn btn-default" th:onclick="'subCounts('+${product.ps.inventory}+')'" >-</button>
+                                <input name="quanity" id="productCounts" type="number" disabled class="btn btn-default"  value="1">
+                                <button type="button" class="btn btn-default" th:onclick="'addCounts('+${product.ps.inventory}+')'" >+</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="row">
+
+                <button onclick="addToCart()" class="btn btn-danger btn-lg col-md-12" >添加购物车</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+    function subCounts(){
+        var counts=$('#productCounts').val();
+        if(counts>1){
+            $('#productCounts').val(--counts);
+        }
+    }
+    function addCounts(inventory){
+        var counts=$('#productCounts').val();
+        if(counts<inventory){
+            $('#productCounts').val(++counts);
+        }
+    }
+    function addToCart(){
+        $.ajax({
+            url:'/addToCart',
+            data:$('#myForm').serialize()+"&quanity="+$('#productCounts').val(),
+            type:'POST',
+            success:function (result) {
+                console.log(result);
+                if (200===result.code){
+                    toast(result.extend.data,'danger');
+                }else {
+                    top.location="/cart";
+                }
+            }
+        });
+    }
+    function buyConfirm(id){
+        var counts=$('#productCounts').text();
+        top.location="/buyConfirm?productId="+id+"&quanity="+counts;
+    }
+    function toast(message,type) {
+        bootoast({
+            message: message,
+            type: type,
+            position: 'top-center',
+            icon: type,
+            timeout: 2,
+            animationDuration: 300,
+            dismissible: true
+        });
+    }
+</script>
+</body>
+</html>

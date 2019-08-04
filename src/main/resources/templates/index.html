@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(购物首页)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/nav3::nav3(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container-fluid">
+    <div class="row" id="main">
+        <!-- 控制栏 -->
+        <div class="col-sm-3 col-md-2 sidebar sidebar-1">
+            <ul class="nav nav-sidebar">
+                <li class="list-group-item-diy col-md-12 pointer" >
+                    <a @click="getProduct(-1,'热卖商品')" >热卖商品</a>
+                </li>
+                <li class="list-group-item-diy col-md-12 pointer" v-for="(item,index) of items" :key="index">
+                    <a @click="getProduct(item.id,item.categoryName)" v-text="item.categoryName"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 控制内容 -->
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="jumbotron">
+                <h1>欢迎来到XXX超市</h1>
+                <p>XXX超市是一个非常优秀的购物网站，你可以在这里买到物美价廉的东西！</p>
+            </div>
+            <div  class="row pd-10" id="productArea1">
+                <hr><h1 v-text="categoryName">数码产品</h1><hr>
+                <div class="col-sm-4 col-md-4" v-for="(product,index) of products" :key="index">
+                        <a  :href="'/productDetail/'+product.id">
+                            <div class="big bigimg col-md-12">
+                                <img :src="'/productImg/'+product.ps.productImg">
+                            </div>
+                            <p class="product-name" v-text="product.productName"></p>
+                            <p class="product-price" v-text="'¥'+parseFloat(0.01*product.ps.discount).toFixed(2)"></p>
+                        </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                categoryName:null,
+                items:[],
+                clickId:null,
+                add:true,
+                text:null,
+                products:null
+            },
+            mounted:function(){
+                this.getData();
+                this.getProduct(-1,"热卖商品");
+            },
+            methods:{
+                getProduct:function(id,categoryName){
+                    this.categoryName=categoryName;
+                    $.ajax({
+                        url:'/getProductByCategoryId?id='+id,
+                        success:function (result) {
+                            vue.products=result.extend.data;
+                        }
+                    });
+                },
+                getData:function(){
+                    $.ajax({
+                        url:'/getAllCategory',
+                        success:function (result) {
+                            if (100===result.code){
+                                vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                },
+                toast:function (message,type) {
+                    bootoast({
+                        message: message,
+                        type: type,
+                        position: 'top-center',
+                        icon: type,
+                        timeout: 2,
+                        animationDuration: 300,
+                        dismissible: true
+                    });
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

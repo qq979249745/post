@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head::head(注册)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/nav::nav(0)"></nav>
+
+<!-- 中间内容 -->
+<div class="container">
+    <h1 class="title center">注册</h1>
+    <br/>
+    <div class="col">
+        <!-- 表单输入 -->
+        <form  class="form-horizontal" id="myForm">
+            <div class="form-group">
+                <label for="account" class="col-sm-2 col-md-2 control-label">账号：</label>
+                <div class=" col-md-12">
+                    <input name="account" type="text" class="form-control" id="account" placeholder="请输入账号"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 col-md-2 control-label">姓名：</label>
+                <div class=" col-md-12">
+                    <input name="name" type="text" class="form-control" id="name" placeholder="请输入你的姓名" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 col-md-2 control-label">性别：</label>
+                <div class=" col-md-12">
+                    <label class="radio-inline">
+                        <input name="gender" type="radio" value="男" checked> 男
+                    </label>
+                    <label class="radio-inline">
+                        <input name="gender" type="radio" value="女"> 女
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 col-md-2 control-label">密码：</label>
+                <div class=" col-md-12">
+                    <input name="password" type="password" class="form-control" id="password" placeholder="禁止输入非法字符" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class=" col-md-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="startRegister()">注册</button>
+                </div>
+            </div>
+        </form>
+        <br/>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+        function startRegister() {
+            var data=$('#myForm').serialize();
+            console.log(data);
+            $.ajax({
+                url:'/startRegister',
+                data:data,
+                type:'post',
+                success:function (result) {
+                    if (200===result.code){
+                        toast(result.extend.data,'danger');
+                    }else {
+                        toast('注册成功，请登录','success');
+                        setInterval(function () {
+                            top.location="login";
+                        },1000);
+                    }
+                }
+            })
+        }
+        function toast(message,type) {
+            bootoast({
+                message: message,
+                type: type,
+                position: 'top-center',
+                icon: type,
+                timeout: 2,
+                animationDuration: 300,
+                dismissible: true
+            });
+        }
+</script>
+</body>
+</html>

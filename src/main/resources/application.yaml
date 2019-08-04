@@ -1,0 +1,31 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/post?characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  freemarker:
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+web:
+  upload-path: C:/image/
+# 沙箱账号
+pay:
+  alipay:
+    gatewayUrl: https://openapi.alipaydev.com/gateway.do
+    appid: 2016092900621166
+    appPrivateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCP7t6g6xlH//jdBF07ZVdAfGs3Wq8QQ4NJx2pcAk8Yei1TKHdSi4Kq2mCM0n4uigygFFNkG91iHe8idYIZG1SLGm/beoObkBZ+aqn39c5Dxpuc6/HszTGn0oNSgHZrcqx/UFxw9S37P5FGUZfoR+ZyKCrQoxS5kIadqBsY1FR169GZTQliQe4Onzxh+/bo45o9yyCZjx/rfV7bBnw4vlHao8jlNoR2oHg1rfSph3bkRfSOgiV12zcT8y5FshjwQOr/SWDSp+gpTs2RI+n9UpnqAN4LYxnRKOPGVXOh6aOE2P1BpadP82NlI1Q+/+eqT0qmNRZJlHJvVygMIyUvpqqNAgMBAAECggEBAINFnQ6u3TPppZQOcunFF7rcvvyRXLE8ofUcR0j7YiA07jm14n4Kd3ZUDVLid+sCRVmKsDPRpivimUOYYLt9TbJAvlwydO3gkGNj7PkV2rW94hdQqikLTIp/WP5Z46dDw0eqh2UOeI16AIldyWo0iVz8fXAkDLbhtaT8uRoALbgNny2SEeDFuFzOBztt7S93ZRRkZrv3dshIp9JDPcJfORuRUa+bX2NQEc9eDmZAh6mUUC61Vaoilg5IGRSTkrP45GecJfAMkfsGfKYFwQRianRJi4DF0BrHBfen4GndnhXo7DfGUZh4IBT4/ADFwVFCJg/66cd+H/5xhJquln3YigECgYEA9WaQwnFzjJnwf2IX40/+E6pbjCEOaM1zxdcYaVB0vyBpcQM5XFgas8ilp5xVA6ToASwfHofRkMmLPs/RZWcTnnPZcEQ6N1w79psPeQFr3sqvGmCqISyP2MuPMhXBAreWP7nbFD63UplCWxY7Vz5a25p8Nd7BwcdtoWQbhc0rbCECgYEAliZcaPyGqYkThjkbJw2PujqnFzOfqR8rrB81MA8JBdutBJntmvnqDUXIvAwFAi+bGoR4+KTrEYyGgE6BklqDAfNoV/rhA1OXGSxglDtk4IsuVjO8ndeRjZkMBCyOA56vBWmPXHk79eCweBS7txeicazKdqKsSGgbZpFVabWBkO0CgYATIG9f+F+9MbJg+1BJU07GUZzZCyqIWJsRbHZmnvK6gtg1Cr9Jx0QthxICQlkN86hxjvLN+mAHHO5RcvkrIiGRVA46hdbTwciaq/NExyuVLc8AC1C3TTXY++SpTrDAeXaoeN/ucATx1ygo2U6+ugly3FOaD0aix9xvm9HZV+hugQKBgA+cgXMw/ldWNz93ZIlU8aKtQn45EdqlsQa+X+tVRNzlEEIwNvIsFde3b72Nil/Fz1ycdW90xjQW5k0k3Hf5DTIAutKa9RZBdK5bXNdMrZpjHjg8PNo0dZ/BT+yHLWTW9N+dMBivSjqwV+jETxgkTvF+w7Y+B6enm2G4rqbFBmmpAoGBAJ+MFFq+9MYvA4OQXGKoKusQRuRhyBokHCho7a7V/ifcWXrgHiWUiqoYWZTvsUKRAv3SYFlILPMyskqMb21XFrSI96N/ay3s0j+9C3GHkEbRaN+KRrncO1lkTtTML+R49ScmCVXgGuv04RGGrYRw+duZ7N+g5SYIcXrPJXVfs3kO
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjUgjpuS3IPQzXG/lMGiEIHhfJvHhpLjgery5xE9koQwP6dp1pYWI8qvkZioUz3+Qnj0LKjJlsTQQeJMiUsqHBbR2Zcz2nZGm69LCvn5XqEnC7L19pT0ts/B0DRVc+BgIf6hJaevT7YuEEoLtyKq27fJnM/0CObByNpTb32QCh5hIJcym7DW25ccw5zqj/BxLUSRr6+pj57PBHjz3s7JDWGirNjMs1bJ2nrW64hwi69pJaueel4ZPJV8BBX0Ot1gRxguxWzrplVzt/9xt6/xjF8fyPOA6H+uXR0mhodgRDZdKjHBUX6fxntB6g7XgmFm+Wxr3q/3ZKSLxv9JXn8RSVQIDAQAB
+    returnUrl: http://f57dma.natappfree.cc/return_url
+    notifyUrl: http://f57dma.natappfree.cc/notify_url

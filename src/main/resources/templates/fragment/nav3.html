@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<nav th:fragment="nav3(index)" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">XXX超市</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="衣服" id="searchKeyWord"/>
+                </div>
+                <a class="btn btn-default" href="/">查找商品</a>
+            </div>
+            <ul th:if="${session.user==null}" class="nav navbar-nav navbar-right " style="margin-right: 20px">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">登录</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">注册</a>
+                </li>
+            </ul>
+            <ul th:if="${session.user!=null}" class="nav navbar-nav navbar-right" style="margin-right: 20px">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+                       th:text="'欢迎你，'+${session.user.name}">
+                        ${currentUser.nickName}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/cart">购物车</a></li>
+                        <li><a href="/sale">订单状态</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout">注销登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

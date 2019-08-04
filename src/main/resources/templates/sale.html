@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(购物订单)">
+    <title></title>
+</head>
+<body>
+<!--导航栏部分-->
+<nav th:replace="fragment/nav3::nav(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container-fluid bigHead">
+    <div class="row">
+        <div class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <div class="jumbotron">
+                <h1>欢迎来到订单页</h1>
+                <p>您的购买清单为</p>
+            </div>
+        </div>
+        <div id="main" class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <form id="myForm">
+                <table class="table table-hover center" id="shoppingCarTable">
+                    <thead>
+                    <tr>
+                        <th>订单编号</th>
+                        <th>订单总额</th>
+                        <th>订单时间</th>
+                        <th>订单状态</th>
+                        <th>支付方式</th>
+                        <th>支付时间</th>
+                        <th>支付流水号</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) of items" :key="index">
+                        <td v-text="item.id"></td>
+                        <td v-text="parseFloat(0.01*item.totalPrice).toFixed(2)+'元'"></td>
+                        <td v-text="item.createTime"></td>
+                        <td v-text="item.status"></td>
+                        <td v-text="item.payment"></td>
+                        <td v-text="item.payTime"></td>
+                        <td v-text="item.payNo"></td>
+                        <td><a class="btn btn-primary" :href="'/saleInfoPage/'+item.id" v-text="item.status=='待付款'?'立即付款':'查看订单'"></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+            <hr/>
+        </div>
+    </div>
+</div>
+
+<!--尾部-->
+<div th:replace="fragment/footer::footer"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                items:null
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                getData:function(){
+                    $.ajax({
+                        url:'/getAllSales',
+                        type:'post',
+                        success:function (result) {
+                            console.log(result);
+                            if (100===result.code){
+                                vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

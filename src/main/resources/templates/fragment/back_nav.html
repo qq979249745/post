@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="nav(index)" class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">XXX超市后台管理界面</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li th:class="${index}==0?'nav-item active':'nav-item'">
+                <a class="nav-link" href="/manager/categoryManager">商品分类管理</a>
+            </li>
+            <li th:class="${index}==1?'nav-item active':'nav-item'">
+                <a class="nav-link" href="/manager/addProduct">添加商品</a>
+            </li>
+        </ul>
+        <form class="form-inline col-md-5 ">
+            <input class="form-control col-md-9 mr-sm-6" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+        <ul class="navbar-nav " style="margin-right: 20px">
+            <li class="nav-item active">
+<!--                <a class="nav-link" th:text="${session.manager.name}"></a>-->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">注销</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>

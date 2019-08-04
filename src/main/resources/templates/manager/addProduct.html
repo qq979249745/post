@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head th:replace="fragment/head :: head(添加商品)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/back_nav::nav(1)"></nav>
+<div class="container" id="main">
+    <form  enctype="multipart/form-data" action="/manager/submitProduct" method="post">
+        <div class="form-group">
+            <label class="col-sm-2"><span class="text-danger">*</span>产品标题：</label>
+            <input class="form-control" name="productName" required>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2"><span class="text-danger">*</span>产品描述：</label>
+            <textarea class="form-control" name="ps.specification" required></textarea>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2"><span class="text-danger">*</span>产品分类：</label>
+            <select class="custom-select" name="categoryId" required>
+                <option v-for="(item,index) of items" :key="index" :value="item.id" v-text="item.categoryName"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-5"><span class="text-danger">*</span>产品价格(单位为分，即101为1.01元。)：</label>
+            <input type="number" class="form-control" name="ps.price" required>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-5"><span class="text-danger">*</span>产品促销价(单位为分，即101为1.01元。)：</label>
+            <input type="number" class="form-control" name="ps.discount" required>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2"><span class="text-danger">*</span>产品库存：</label>
+            <input type="number" class="form-control" name="ps.inventory" required>
+        </div>
+        <div class="form-group">
+            <div>
+                <img style="height: 300px;width: 300px" :src="imgPath">
+            </div>
+            <div><span class="text-danger">*</span>选择图片：</div>
+            <div class="custom-file">
+                <label class="custom-file-label" for="file" v-text="fileName"></label>
+                <input id="file" @change="imgChange()" name="file" type="file" accept="image/*"  class="custom-file-input"  required>
+            </div>
+        </div>
+        <div class="form-group">
+            <button @click="save"  type="button" class="btn btn-primary">保存</button>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragment/footer::footer"></div>
+<script>
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                fileName:null,
+                items:null,
+                imgPath:null
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                imgChange:function(){
+                    var file=$('#file')[0].files[0];
+                    if (file==null)return;
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload=function (ev) {
+                        vue.fileName=file.name;
+                        vue.imgPath=this.result;
+                    };
+                },
+                save:function(){
+                    var data=new FormData($("#main form")[0]);
+                    $.ajax({
+                        url:'/manager/submitProduct',
+                        data:data,
+                        type:'post',
+                        processData: false,
+                        contentType: false,
+                        success:function (result) {
+                            if (200===result.code){
+                                vue.toast(result.extend.data,'danger');
+                            }else {
+                                $('#modal').modal('hide');
+                                vue.getData();
+                                vue.toast('保存成功','success');
+                                setInterval(function () {
+                                    top.location=result.extend.data;
+                                },1000);
+                            }
+                        }
+                    });
+                },
+                getData:function(){
+                    $.ajax({
+                        url:'/getAllCategory',
+                        success:function (result) {
+                            if (100===result.code){
+                               vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                },
+                toast:function (message,type) {
+                    bootoast({
+                        message: message,
+                        type: type,
+                        position: 'top-center',
+                        icon: type,
+                        timeout: 2,
+                        animationDuration: 300,
+                        dismissible: true
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

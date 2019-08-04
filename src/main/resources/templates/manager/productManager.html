@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head th:replace="fragment/head :: head(管理员后台界面)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/back_nav::nav(1)"></nav>
+<div class="container">
+    <div class="row">
+        <a class="btn btn-primary" href="/manager/addProduct">新增商品</a>
+    </div>
+</div>
+<div id="main" class="container" style="margin-top: 30px">
+    <div v-for="(item,index) of items"  :key="index" class="row align-items-center" style="padding: 3px; border: 1px #6c757d solid;">
+        <div class="col-md-2">
+            <img class="img img-rounded" style="height: 120px;width: 120px;" :src="'/productImg/'+item.ps.productImg">
+        </div>
+        <div class="col-md-4">
+            <dt v-text="item.productName">袜子男士纯棉短袜船袜男短筒防臭夏季薄款低帮浅口隐形男袜潮夏天 [交易快照]</dt>
+            <div>库存：<span v-text="item.ps.inventory"></span></div>
+        </div>
+        <div class="col-md-2">
+            <del>市场价：<span v-text="parseFloat(0.01*item.ps.price).toFixed(2)">98.80</span>元</del>
+            <div>促销价：<span v-text="parseFloat(0.01*item.ps.discount).toFixed(2)">98.80</span>元</div>
+        </div>
+        <div class="col-md-2">
+            <div>分类：<span v-text="item.category.categoryName"></span></div>
+        </div>
+        <div class="col-md-2">
+            <a :href="'/manager/editProduct/'+item.id" class="btn btn-outline-primary">修改</a>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                items:[]
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                getData:function(){
+                    var h=location.href;
+                    $.ajax({
+                        url:'/getProductByCategoryId?id='+h.substr(h.lastIndexOf("/")+1),
+                        success:function (result) {
+                            console.log(result);
+                            if (100===result.code){
+                               vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

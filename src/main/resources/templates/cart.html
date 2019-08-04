@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(购物车)">
+    <title></title>
+</head>
+<body>
+<!--导航栏部分-->
+<nav th:replace="fragment/nav3::nav(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container-fluid bigHead">
+    <div class="row">
+        <div class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <div class="jumbotron">
+                <h1>欢迎来到购物车</h1>
+                <p>您的购物车清单为</p>
+            </div>
+        </div>
+        <div id="main" class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <form id="myForm">
+                <table class="table table-hover center" id="shoppingCarTable">
+                    <thead>
+                    <tr>
+                        <th>是否购买</th>
+                        <th>商品名称</th>
+                        <th>商品单价</th>
+                        <th>商品数量</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) of items" :key="index">
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="products" :value="item.id">
+                                </label>
+                            </div>
+                        </td>
+                        <td><a :href="'/productDetail/'+item.product.id"  v-text="item.product.productName"></a></td>
+                        <td v-text="parseFloat(0.01*item.product.ps.discount).toFixed(2)"></td>
+                        <td v-text="item.quanity"></td>
+                        <td><button type="button" class="btn btn-danger" @click="deleteItem(item.id)">删除</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+            <hr/>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                <button type="button" class="btn btn-danger btn-lg col-lg-4 col-md-4 col-sm-4" @click="confirmPre()">确认购买</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--尾部-->
+<div th:replace="fragment/footer::footer"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                items:null
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                confirmPre:function(){
+                    var data=$('#myForm').serialize();
+                    if (data.length > 0) {
+                        $.ajax({
+                            url:'/buy',
+                            data:data,
+                            type:'post',
+                            success:function (result) {
+                                console.log(result);
+                                top.location=result;
+                                /*if (200===result.code){
+                                    vue.toast(result.extend.data,'danger');
+                                }else {
+                                    vue.toast('删除成功','success');
+                                    vue.getData();
+                                }*/
+                            }
+                        });
+                    }else {
+                        vue.toast('请勾选要购买的商品！','danger');
+                    }
+                },
+                deleteItem:function(id){
+                    $.ajax({
+                        url:'/deleteCartItem',
+                        data:'id='+id,
+                        type:'post',
+                        success:function (result) {
+                            if (200===result.code){
+                                vue.toast(result.extend.data,'danger');
+                            }else {
+                                vue.toast('删除成功','success');
+                                vue.getData();
+                            }
+                        }
+                    });
+                },
+                getData:function(){
+                    $.ajax({
+                        url:'/getCartItem',
+                        type:'post',
+                        success:function (result) {
+                            if (100===result.code){
+                                vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                },
+                toast:function (message,type) {
+                    bootoast({
+                        message: message,
+                        type: type,
+                        position: 'top-center',
+                        icon: type,
+                        timeout: 2,
+                        animationDuration: 300,
+                        dismissible: true
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

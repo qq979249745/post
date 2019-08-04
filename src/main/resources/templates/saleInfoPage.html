@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head3::head3(订单详情)">
+    <title></title>
+</head>
+<body>
+<!--导航栏部分-->
+<nav th:replace="fragment/nav3::nav(1)"></nav>
+
+<!-- 中间内容 -->
+<div class="container-fluid bigHead">
+    <div class="row">
+        <div class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <div class="jumbotron">
+                <h1>欢迎来到订单详情</h1>
+                <p>您的购物清单为</p>
+            </div>
+        </div>
+        <div id="main" class="col-sm-10  col-md-10 col-sm-offset-1 col-md-offset-1">
+            <input id="saleId" hidden th:value="${id}">
+            <form id="myForm">
+                <table class="table table-hover center" id="shoppingCarTable">
+                    <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>商品单价</th>
+                        <th>商品数量</th>
+                        <th>总价</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) of items" :key="index">
+                        <td><a :href="'/productDetail/'+item.product.id"  v-text="item.product.productName"></a></td>
+                        <td v-text="parseFloat(0.01*item.product.ps.discount).toFixed(2)"></td>
+                        <td v-text="item.quanity"></td>
+                        <td v-text="parseFloat(0.01*item.product.ps.discount*item.quanity).toFixed(2)"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-12 " v-if="sale!=null">
+                        <table class="table table-hover center">
+                            <tbody >
+                            <tr>
+                                <td>订单编号</td>
+                                <td v-text="sale.id"></td>
+                            </tr>
+                            <tr>
+                                <td>订单总额</td>
+                                <td v-text="parseFloat(0.01*sale.totalPrice).toFixed(2)+'元'"></td>
+                            </tr>
+                            <tr>
+                                <td>订单时间</td>
+                                <td v-text="sale.createTime"></td>
+                            </tr>
+                            <tr>
+                                <td>订单状态</td>
+                                <td v-text="sale.status"></td>
+                            </tr>
+                            <tr>
+                                <td>支付方式</td>
+                                <td v-text="sale.payment"></td>
+                            </tr>
+                            <tr>
+                                <td>支付时间</td>
+                                <td v-text="sale.payTime"></td>
+                            </tr>
+                            <tr>
+                                <td>支付流水号</td>
+                                <td v-text="sale.payNo"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+            <hr/>
+            <div class="row">
+                <form v-if="sale!=null&&sale.status=='待付款'" action="/pay" method="post">
+                    <input hidden name="id" :value="sale.id">
+                    <div class="form-group">
+                        <label class="col-sm-2"><span class="text-danger">*</span>请选择支付方式：</label>
+                        <select class="form-control" name="payment" >
+                            <option value="支付宝支付">支付宝支付</option>
+                            <option value="微信支付">微信支付</option>
+                            <option value="现金支付">现金支付</option>
+                        </select>
+                    </div>
+                    <button  type="submit" class="btn btn-danger btn-lg  col-md-12 ">确认支付</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--尾部-->
+<div th:replace="fragment/footer::footer"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                items:null,
+                sale:null
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                confirmPre:function(){
+                    var data=$('#myForm').serialize();
+                    if (data.length > 0) {
+                        $.ajax({
+                            url:'/buy',
+                            data:data,
+                            type:'post',
+                            success:function (result) {
+                                console.log(result);
+                                top.location=result;
+                                /*if (200===result.code){
+                                    vue.toast(result.extend.data,'danger');
+                                }else {
+                                    vue.toast('删除成功','success');
+                                    vue.getData();
+                                }*/
+                            }
+                        });
+                    }else {
+                        vue.toast('请勾选要购买的商品！','danger');
+                    }
+                },
+                deleteItem:function(id){
+                    $.ajax({
+                        url:'/deleteCartItem',
+                        data:'id='+id,
+                        type:'post',
+                        success:function (result) {
+                            if (200===result.code){
+                                vue.toast(result.extend.data,'danger');
+                            }else {
+                                vue.toast('删除成功','success');
+                                vue.getData();
+                            }
+                        }
+                    });
+                },
+                getData:function(){
+                    $.ajax({
+                        url:'/saleInfo/'+$('#saleId').val(),
+                        type:'get',
+                        success:function (result) {
+                            console.log(result);
+                            if (100===result.code){
+                                vue.items=result.extend.data.saleItems;
+                                vue.sale=result.extend.data;
+                            }
+                        }
+                    });
+                },
+                toast:function (message,type) {
+                    bootoast({
+                        message: message,
+                        type: type,
+                        position: 'top-center',
+                        icon: type,
+                        timeout: 2,
+                        animationDuration: 300,
+                        dismissible: true
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

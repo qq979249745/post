@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head th:insert="fragment/head :: head(管理员后台界面)">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragment/back_nav::nav(0)"></nav>
+<div class="container" id="main">
+    <div class="row">
+        <button class="btn btn-primary" data-toggle="modal" @click="addCategory()">新增分类</button>
+        <div class="modal fade" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 1000px;left: -200px;">
+                    <div class="modal-header">
+                        <h4 class="modal-title" v-text="title"></h4>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="category_name">分类名称：</label>
+                                <input v-text="text" name="categoryName" type="text" class="form-control" id="category_name" placeholder="name">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button @click="save()" type="button" class="btn btn-primary" >保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <table id="table" class="table table-hover">
+            <thead>
+            <tr>
+                <th>分类id</th>
+                <th>分类名称</th>
+                <th>商品数</th>
+                <th>管理商品</th>
+                <th>修改</th>
+                <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in items" :key="index" >
+                    <td v-text="item.id"></td>
+                    <td v-text="item.categoryName"></td>
+                    <td v-text="item.productNum"></td>
+                    <td>
+                        <a :href="'/manager/productManager/'+item.id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-cog">管理商品</span></a>
+                    </td>
+                    <td>
+                        <button @click="edit(item.id,item.categoryName)" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-edit">编辑</span></button>
+                    </td>
+                    <td>
+                        <button v-if="item.productNum==0" @click="deleteItem(item.id)" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash">删除</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="fragment/footer::footer"></div>
+<script>
+
+    $(function () {
+        var vue=new Vue({
+            el:"#main",
+            data:{
+                title:null,
+                items:[],
+                clickId:null,
+                add:true,
+                text:null
+            },
+            mounted:function(){
+                this.getData();
+            },
+            methods:{
+                addCategory:function(){
+                    this.add=true;
+                    this.text=null;
+                    this.title="请输入分类名称";
+                    $("#modal").modal({backdrop:"static"});
+                },
+                edit:function(id,categoryName){
+                    this.add=false;
+                    this.text=categoryName;
+                    this.clickId=id;
+                    this.title="请修改分类名称";
+                    $("#modal").modal({backdrop:"static"});
+                },
+                save:function(){
+                    var data=$("#main form").serialize();
+                    $.ajax({
+                        url:vue.add?'/manager/addCategory':'/manager/updateCategory',
+                        data:vue.add?$("#main form").serialize():$("#main form").serialize()+'&id='+vue.clickId,
+                        type:'post',
+                        success:function (result) {
+                            if (200===result.code){
+                                vue.toast(result.extend.data,'danger');
+                            }else {
+                                $('#modal').modal('hide');
+                                vue.getData();
+                                vue.toast('保存成功','success');
+                            }
+                        }
+                    });
+                },
+                getData:function(){
+                    $.ajax({
+                        url:'/getAllCategory',
+                        success:function (result) {
+                            console.log(result);
+                            if (100===result.code){
+                               vue.items=result.extend.data;
+                            }
+                        }
+                    });
+                },
+                deleteItem:function (id) {
+                    console.log(id);
+                    $.ajax({
+                        url:'/manager/deleteCategory?id='+id,
+                        success:function (result) {
+                            if (200===result.code){
+                                vue.toast(result.extend.data,'danger');
+                            }else {
+                                $('#modal').modal('hide');
+                                vue.getData();
+                                vue.toast('删除成功','success');
+                            }
+                        }
+                    });
+                },
+                toast:function (message,type) {
+                    bootoast({
+                        message: message,
+                        type: type,
+                        position: 'top-center',
+                        icon: type,
+                        timeout: 2,
+                        animationDuration: 300,
+                        dismissible: true
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
